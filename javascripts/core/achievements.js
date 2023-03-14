@@ -198,24 +198,6 @@ function giveAchievement(name) {
     updateAchievements();
 }
 
-function updateAchievementAria(domObj, isSecret=false) {
-  var isLocked = domObj.classList.contains("achievementlocked") || domObj.classList.contains("achievementhidden");
-  var label_text = (!isLocked) ? "(Completed) " : "";
-  // Retrieve achievement row, trimming off the "r" or "s"
-  label_text += allAchievementNums[domObj.id].substring(1) + ", ";
-  label_text += domObj.id;
-  // We only update labels with differing tooltips, which means that secret achievements should only be updated if they're unlocked.
-  if(!isSecret || isSecret && !isLocked) {
-    // Add a slight pause for screen readers, if necessary
-    var punctuation_expr = /[.,:!?]$/;
-    if (!punctuation_expr.test(label_text)) {
-      label_text += ".";
-    }
-    label_text += " " + domObj.getAttribute("ach-tooltip");
-  }
-  domObj.setAttribute("aria-label", label_text);
-}
-
 function updateAchievements() {
   var amount = 0
   for (var i=1; i<document.getElementById("achievementtable").children[0].children.length+1; i++) {
@@ -226,13 +208,9 @@ function updateAchievements() {
           var name = allAchievements["r"+achNum]
           if (player.achievements.includes("r"+achNum)) {
               n++
-              var domObj = document.getElementById(name);
-              domObj.className = "achievementunlocked";
-              updateAchievementAria(domObj);
+              document.getElementById(name).className = "achievementunlocked"
           } else {
-              var domObj = document.getElementById(name);
-              domObj.className = "achievementlocked";
-              updateAchievementAria(domObj);
+              document.getElementById(name).className = "achievementlocked"
           }
       }
       if (n == 8) {
@@ -250,15 +228,11 @@ function updateAchievements() {
           var name = allAchievements["s"+achNum]
           if (player.achievements.includes("s"+achNum)) {
               n++
-              var domObj = document.getElementById(name);
-              domObj.setAttribute('ach-tooltip', secretAchievementTooltips["s"+achNum]);
-              domObj.className = "achievementunlocked";
-              updateAchievementAria(domObj, true);
+              document.getElementById(name).setAttribute('ach-tooltip', secretAchievementTooltips["s"+achNum])
+              document.getElementById(name).className = "achievementunlocked"
           } else {
-              var domObj = document.getElementById(name);
-              domObj.className = "achievementhidden";
-              domObj.setAttribute('ach-tooltip', (name[name.length-1] !== "?" && name[name.length-1] !== "!" && name[name.length-1] !== ".") ? name+"." : name);
-              updateAchievementAria(domObj, true);
+              document.getElementById(name).className = "achievementhidden"
+              document.getElementById(name).setAttribute('ach-tooltip', (name[name.length-1] !== "?" && name[name.length-1] !== "!" && name[name.length-1] !== ".") ? name+"." : name)
           }
       }
       if (n == 8) {
